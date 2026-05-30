@@ -16,6 +16,7 @@ Rail-Connect is a railway management and connectivity platform designed to simpl
 - 🌐 HTML5
 - 🎨 CSS3
 - ⚙️ Vanilla JavaScript (ES6+)
+- 📄 JSON Database
 
 ## 🚀 Installation and Setup
 
