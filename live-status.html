@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Train Time - Live Train Status | RailConnect</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .search-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease;
+        }
+
+        .search-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .search-form {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px;
+            font-size: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        .btn-search {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .btn-search:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-refresh {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .btn-refresh:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
+        }
+
+        .result-container {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+        .train-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .train-name {
+            font-size: 1.8em;
+            color: #333;
+            font-weight: 700;
+        }
+
+        .train-number {
+            color: #667eea;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .status-badge {
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .status-running {
+            background: #4ade80;
+            color: white;
+        }
+
+        .status-delayed {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .current-location {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .current-location h3 {
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .current-location p {
+            font-size: 1.5em;
+            font-weight: 700;
+        }
+
+        .delay-info {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .delay-info strong {
+            color: #d97706;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 50px;
+            padding-bottom: 30px;
+        }
+
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: -30px;
+            width: 3px;
+            background: #e0e0e0;
+        }
+
+        .timeline-item:last-child::before {
+            display: none;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 8px;
+            top: 5px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #667eea;
+            z-index: 1;
+        }
+
+        .timeline-dot.completed {
+            background: #4ade80;
+            border-color: #4ade80;
+        }
+
+        .timeline-dot.current {
+            background: #667eea;
+            border-color: #667eea;
+            box-shadow: 0 0 0 6px rgba(102, 126, 234, 0.2);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 0 6px rgba(102, 126, 234, 0.2);
+            }
+            50% {
+                box-shadow: 0 0 0 10px rgba(102, 126, 234, 0.1);
+            }
+        }
+
+        .station-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .station-info:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .station-name {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .station-times {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .station-times span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .no-result {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .no-result h3 {
+            color: #333;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .no-result p {
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .search-form {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .train-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .station-times {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚂 Train Time</h1>
+            <p>Live Train Status & Tracking</p>
+        </div>
+
+        <div class="search-card">
+            <form class="search-form" onsubmit="searchTrain(event)">
+                <input 
+                    type="text" 
+                    class="search-input" 
+                    id="trainSearch" 
+                    placeholder="Enter train name or number (e.g., Rajdhani, 12301)"
+                    required
+                >
+                <button type="submit" class="btn btn-search">🔍 Search</button>
+                <button type="button" class="btn btn-refresh" onclick="refreshStatus()">🔄 Refresh</button>
+            </form>
+        </div>
+
+        <div class="no-result" id="noResult">
+            <h3>❌ Train Not Found</h3>
+            <p>Please check the train name or number and try again.</p>
+        </div>
+
+        <div class="result-container" id="resultContainer">
+            <div class="info-card">
+                <div class="train-header">
+                    <div>
+                        <div class="train-name" id="trainName"></div>
+                        <div class="train-number" id="trainNumber"></div>
+                    </div>
+                    <span class="status-badge" id="statusBadge"></span>
+                </div>
+
+                <div class="current-location">
+                    <h3>📍 Current Location</h3>
+                    <p id="currentLocation"></p>
+                </div>
+
+                <div class="delay-info" id="delayInfo" style="display: none;">
+                    <strong>⚠️ Delay:</strong> <span id="delayTime"></span>
+                </div>
+
+                <h3 style="margin-bottom: 20px; color: #333;">🛤️ Route & Schedule</h3>
+                <div class="timeline" id="timeline"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const trainData = {
+            '12301': {
+                name: 'Rajdhani Express',
+                number: '12301',
+                status: 'running',
+                currentStation: 'Kanpur Central',
+                delay: 15,
+                stations: [
+                    { name: 'New Delhi', arrival: '--', departure: '16:55', status: 'completed' },
+                    { name: 'Ghaziabad', arrival: '17:20', departure: '17:22', status: 'completed' },
+                    { name: 'Kanpur Central', arrival: '21:40', departure: '21:50', status: 'current' },
+                    { name: 'Allahabad Jn', arrival: '23:35', departure: '23:40', status: 'upcoming' },
+                    { name: 'Mughal Sarai', arrival: '01:50', departure: '02:00', status: 'upcoming' },
+                    { name: 'Patna Jn', arrival: '04:30', departure: '04:40', status: 'upcoming' },
+                    { name: 'Howrah Jn', arrival: '09:55', departure: '--', status: 'upcoming' }
+                ]
+            },
+            '12302': {
+                name: 'Howrah Rajdhani',
+                number: '12302',
+                status: 'running',
+                currentStation: 'Patna Junction',
+                delay: 0,
+                stations: [
+                    { name: 'Howrah Jn', arrival: '--', departure: '17:00', status: 'completed' },
+                    { name: 'Patna Jn', arrival: '22:15', departure: '22:25', status: 'current' },
+                    { name: 'Mughal Sarai', arrival: '00:35', departure: '00:45', status: 'upcoming' },
+                    { name: 'Allahabad Jn', arrival: '02:30', departure: '02:35', status: 'upcoming' },
+                    { name: 'Kanpur Central', arrival: '04:25', departure: '04:30', status: 'upcoming' },
+                    { name: 'New Delhi', arrival: '09:55', departure: '--', status: 'upcoming' }
+                ]
+            },
+            'shatabdi': {
+                name: 'Shatabdi Express',
+                number: '12002',
+                status: 'running',
+                currentStation: 'Agra Cantt',
+                delay: 5,
+                stations: [
+                    { name: 'New Delhi', arrival: '--', departure: '06:00', status: 'completed' },
+                    { name: 'Agra Cantt', arrival: '08:10', departure: '08:12', status: 'current' },
+                    { name: 'Gwalior Jn', arrival: '09:38', departure: '09:40', status: 'upcoming' },
+                    { name: 'Jhansi Jn', arrival: '11:05', departure: '11:10', status: 'upcoming' },
+                    { name: 'Bhopal Jn', arrival: '14:15', departure: '--', status: 'upcoming' }
+                ]
+            }
+        };
+
+        let currentTrain = null;
+
+        function searchTrain(event) {
+            event.preventDefault();
+            const searchValue = document.getElementById('trainSearch').value.trim().toLowerCase();
+            
+            // Prevent search if input is empty
+            if (!searchValue) {
+                return;
+            }
+            
+            let found = false;
+            for (let key in trainData) {
+                const train = trainData[key];
+                if (train.number.toLowerCase() === searchValue || 
+                    train.name.toLowerCase().includes(searchValue) ||
+                    key === searchValue) {
+                    currentTrain = train;
+                    displayTrainInfo(train);
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                document.getElementById('resultContainer').style.display = 'none';
+                document.getElementById('noResult').style.display = 'block';
+            }
+        }
+
+        function displayTrainInfo(train) {
+            document.getElementById('noResult').style.display = 'none';
+            document.getElementById('resultContainer').style.display = 'block';
+
+            document.getElementById('trainName').textContent = train.name;
+            document.getElementById('trainNumber').textContent = `Train #${train.number}`;
+            document.getElementById('currentLocation').textContent = train.currentStation;
+
+            const statusBadge = document.getElementById('statusBadge');
+            if (train.delay > 0) {
+                statusBadge.textContent = `Delayed by ${train.delay} min`;
+                statusBadge.className = 'status-badge status-delayed';
+                document.getElementById('delayInfo').style.display = 'block';
+                document.getElementById('delayTime').textContent = `${train.delay} minutes`;
+            } else {
+                statusBadge.textContent = 'On Time';
+                statusBadge.className = 'status-badge status-running';
+                document.getElementById('delayInfo').style.display = 'none';
+            }
+
+            const timeline = document.getElementById('timeline');
+            timeline.innerHTML = '';
+
+            train.stations.forEach(station => {
+                const item = document.createElement('div');
+                item.className = 'timeline-item';
+
+                const dot = document.createElement('div');
+                dot.className = `timeline-dot ${station.status}`;
+                item.appendChild(dot);
+
+                const info = document.createElement('div');
+                info.className = 'station-info';
+
+                const name = document.createElement('div');
+                name.className = 'station-name';
+                name.textContent = station.name;
+                info.appendChild(name);
+
+                const times = document.createElement('div');
+                times.className = 'station-times';
+                times.innerHTML = `
+                    <span>🕐 Arrival: <strong>${station.arrival}</strong></span>
+                    <span>🕑 Departure: <strong>${station.departure}</strong></span>
+                `;
+                info.appendChild(times);
+
+                item.appendChild(info);
+                timeline.appendChild(item);
+            });
+        }
+
+        function refreshStatus() {
+            const searchInput = document.getElementById('trainSearch');
+            
+            // Check if input is empty
+            if (!searchInput.value.trim()) {
+                alert('⚠️ Input box is  empty!');
+                return;
+            }
+            
+            // Clear the input
+            searchInput.value = '';
+            document.getElementById('resultContainer').style.display = 'none';
+            document.getElementById('noResult').style.display = 'none';
+            currentTrain = null;
+        }
+
+        // Add event listener to prevent form submission on Enter key when input is empty
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('trainSearch');
+            searchInput.addEventListener('keypress', function(event) {
+                if (event.key === 'Enter' && !this.value.trim()) {
+                    event.preventDefault();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

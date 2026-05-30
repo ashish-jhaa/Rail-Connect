@@ -1,0 +1,572 @@
+* {
+    margin: 0%;
+    padding: 0%;
+}
+
+:root {
+    --main-gradient: linear-gradient(170deg, #8c3ae9, #b342b3);
+}
+
+
+body {
+    background-color: rgb(234, 234, 241);
+    transition: all 0.5s ease;
+}
+
+.header {
+    width: 100vw;
+    height: 14vh;
+    /* padding: 11px; */
+    position: sticky;
+    top: 1vh;
+    z-index: 1000;
+    background: transparent;
+
+}
+
+.navbar {
+    width: 90vw;
+    height: 12vh;
+    /* margin-top: 2.5vh; */
+    margin-left: 5vw;
+    border: 3px solid rgb(1, 1, 39);
+    border-radius: 19px;
+    /* backdrop-filter: blur(5px); */
+    background-color: #37e5f1ee;
+    justify-content: space-evenly;
+    box-shadow: 0 4px 10px rgba(85, 84, 84, 0.274);
+    animation: fadeInDown 0.5s ease;
+}
+
+.navbar ul {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    list-style: none;
+    padding-right: 1vw;
+    width: 90vw;
+    height: 10vh;
+}
+
+.navbar ul li {
+    padding-left: 31px;
+    align-items: center;
+    /* justify-content: center; */
+    margin-top: 12px;
+    font-size: 20px;
+    font-weight: 400;
+    font-family: "Segoe UI";
+
+    display: flex;
+    cursor: pointer;
+}
+
+.navbar ul li a {
+    color: black;
+    text-decoration: none;
+}
+
+.navbar ul li a:hover {
+    color: rgb(1, 18, 172);
+    text-shadow: rgb(27, 17, 17);
+    /* border: 1px dashed white; */
+    /* border-radius: 11px; */
+}
+
+
+
+/* CHATGPT DOWN */
+.navbar a {
+    text-decoration: none;
+    color: white;
+    margin: 0 15px;
+    font-weight: 600;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.navbar a::after {
+    content: "";
+    position: absolute;
+    left: -1%;
+    bottom: -5px;
+    width: 0;
+    height: 2px;
+    background: white;
+    transition: width 0.3s ease;
+}
+
+.navbar a:hover::after {
+    width: 100%;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    background: linear-gradient(270deg, #ff0000, #ff9900, #00ff00, #00ccff, #9900ff, #ff00cc);
+    background-size: 1200% 1200%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: flowingColors 5s ease infinite;
+}
+
+@keyframes flowingColors {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+
+/* CHATGPT UP */
+
+.navbar ul li img {
+    margin: 0;
+    padding: 0;
+}
+
+/* .badge button{
+    width: 28px;
+    height: 28px;
+    border: 2px solid black;
+    border-radius: 50%;
+} */
+
+.right2 {
+    width: 20vw;
+    display: flex;
+    gap: 33px;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+/* BY CHATGPT DOWN */
+.login-btn {
+    background: linear-gradient(90deg, #7b42f6, #b01eff);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 12px 40px;
+    margin-top: 13px;
+    /* border: none; */
+    border: 2px solid rgb(252, 252, 253);
+    border-radius: 50px;
+    cursor: pointer;
+    outline: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login-btn:hover {
+    transform: scale(1.1);
+    background: linear-gradient(56deg, #b01eff, #7b42f6);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* BY CHATGPT UP */
+
+.page1 {
+    height: 82vh;
+    width: 100vw;
+    background-image: url(vandebaharat.png);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    /* position: absolute; */
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    /* justify-content: center; */
+}
+
+
+.page1middle {
+    display: flex;
+    /* align-items: center; */
+    justify-content: center;
+
+
+
+}
+input {
+  padding: 10px;
+  width: 220px;
+  border-radius: 6px;
+  border: 1px solid #888;
+}
+.input-box {
+  margin-top: 7px;
+  position: relative;
+  display: inline-block;
+}
+
+
+/* Container for suggestions */
+.suggestions {
+  position: absolute;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+  width: 100%;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  z-index: 1000;
+  display: none;
+}
+
+/* Each suggestion item */
+.suggestion-item {
+  padding: 8px 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* Hover effect */
+.suggestion-item:hover {
+  background: #f0f0f0;
+}
+
+
+
+
+
+
+
+
+
+.hero1 {
+    /* border: 2px solid black; */
+    width: 41vw;
+    height: 55vh;
+    /* font-size: 1.5rem; */
+    padding: 50px;
+    margin: 20px;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap');
+
+.hero1 h1 {
+    font-family: 'Poppins', sans-serif;
+    margin-bottom: 32px;
+    font-size: 2.5rem;
+    animation: textSlide 1.5s ease;
+}
+
+.hero1 p {
+    font-weight: 400;
+    font-size: 1.5rem;
+    font-weight: 900;
+}
+
+/* BY CHATGPT */
+
+/* Hero Section */
+.hero {
+    width: 41vw;
+    height: 55vh;
+    font-size: 1.5rem;
+    text-align: center;
+    padding: 50px;
+    /* background-color: #cf1212; */
+    border-radius: 10px;
+    margin: 20px;
+    margin-right: 3vw;
+    /* margin-left: 54px; */
+    /* background: linear-gradient(to right, #8299f7a4, #24c5da62); */
+    background: linear-gradient(to right, #c0bfbdc7, #d8d7d7ce, #b7c3e9bb);
+
+    animation: fadeIn 1.5s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.hero h1 {
+    font-family: sans-serif;
+    font-size: 2.5rem;
+    animation: textSlide 1.5s ease;
+}
+
+.hero p {
+
+    font-weight: 350;
+    font-size: 1.5rem;
+}
+
+.middle {
+    display: flex;
+    align-items: center;
+    height: 40vh;
+}
+
+#train-class {
+    width: 16vw;
+    padding: 15px 22px;
+    margin: 23px;
+    border: 1px solid black;
+    border-radius: 12px;
+}
+
+/* BY CHATGPT DOWN */
+select {
+    padding: 12px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #6a11cb, #2575fc);
+    color: #fff;
+    font-weight: bold;
+    outline: none;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    appearance: none;
+}
+
+select:hover {
+    transform: scale(1.05);
+    background: linear-gradient(90deg, #2575fc, #6a11cb);
+}
+
+select option {
+    color: #333;
+    background-color: #fff;
+    font-size: 15px;
+    padding: 10px;
+}
+
+
+.autocomplete-list {
+    position: absolute;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-top: none;
+    max-height: 150px;
+    overflow-y: auto;
+    width: 16vw;
+    z-index: 10;
+    display: none;
+    font-size: 1rem;
+}
+.autocomplete-item {
+    padding: 8px;
+    cursor: pointer;
+}
+.autocomplete-item:hover {
+    background: #f0f0f0;
+}
+
+
+input {
+    width: 13vw;
+    padding: 11px;
+    margin: 23px;
+    border: 1px solid black;
+    border-radius: 12px;
+
+    padding: 12px 20px;
+    font-size: 16px;
+    /* border: none; */
+    border-radius: 8px;
+    background: linear-gradient(90deg, #6a11cb, #2575fc);
+    color: #ffffff;
+    font-weight: bold;
+    outline: none;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    appearance: none;
+}
+
+input:hover {
+    transform: scale(1.05);
+    background: linear-gradient(90deg, #2575fc, #6a11cb);
+}
+
+select option {
+    color:black;
+    background-color: #f7f5f5;
+    font-size: 15px;
+    padding: 10px;
+}
+
+/* BY CHATGPT UP */
+input::placeholder {
+    color: #fffdfd;
+}
+
+
+
+.cta-btn {
+    font-size: 21px;
+    font-weight: 580;
+    padding: 10px 20px;
+    background-color: #016dda;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition:background 0.2s
+}
+.cta-btn a{
+    text-decoration: none;
+    color: white;
+}
+
+.cta-btn:hover {
+    background-color: #012346;
+}
+
+
+/* Features Section */
+.page2 {
+    height: 111vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* background: linear-gradient(90deg, #41f158a2, #4994db); */
+    /* background: linear-gradient(to right, #d9a7c7, #fffcdc); */
+    background-color: rgb(253, 252, 252);
+}
+
+.page2-text {
+    font-size: 3em;
+    font-weight: 700;
+    width: 55vw;
+    text-align: center;
+
+}
+
+.features {
+
+    display: flex;
+    justify-content: space-around;
+    margin: 20px;
+    flex-wrap: wrap;
+}
+
+.feature-card {
+
+    background-color: #fff;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 250px;
+    text-align: center;
+    display: flex;
+}
+
+.feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+
+.card1 {
+    width: 90vw;
+    height: 18vh;
+    background-image: var(--main-gradient);
+
+}
+
+.card2 {
+    width: 90vw;
+    height: 18vh;
+    background-image: var(--main-gradient);
+}
+
+.card3 {
+    width: 90vw;
+    height: 18vh;
+    background-image: var(--main-gradient);
+}
+
+.para1 {
+    color: white;
+    font-size: x-large;
+    font-weight: 600;
+    text-decoration: underline;
+    display: flex;
+    justify-items: flex-start;
+    padding-left: 13vw;
+    /* text-align: justify; */
+}
+
+.para2 {
+    width: 38vw;
+    font-size: 21px;
+    font-weight: 180;
+}
+
+.card-pic {
+    margin-left: auto;
+    width: 150px;      /* Make it a square */
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* background: #f7f7f7;  */
+    border-radius: 50%; /*  Optional: circular container*/
+    overflow: hidden;    /* Ensures image stays inside */
+}
+
+.card-pic img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;  /* Makes the image circular */
+}
+
+footer {
+    text-align: center;
+    padding: 10px;
+    background: #333;
+    color: white;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes textSlide {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

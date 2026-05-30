@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Booking | RailConnect</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="shortcut icon" type="image/png" href="logo.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+
+        .booking-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease;
+        }
+
+        .booking-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .form-title {
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 25px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 1em;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 8px;
+        }
+
+        .form-label .required {
+            color: #e74c3c;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            background: white;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: #999;
+        }
+
+        /* Autocomplete styling */
+        .autocomplete-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .autocomplete-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-top: none;
+            border-radius: 0 0 10px 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: none;
+        }
+
+        .autocomplete-suggestion {
+            padding: 12px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s ease;
+            font-size: 14px;
+        }
+
+        .autocomplete-suggestion:hover {
+            background-color: #f8f9fa;
+        }
+
+        .autocomplete-suggestion:last-child {
+            border-bottom: none;
+        }
+
+        .autocomplete-suggestion .station-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 2px;
+        }
+
+        .autocomplete-suggestion .station-code {
+            font-size: 12px;
+            color: #667eea;
+            font-weight: 500;
+        }
+
+        .autocomplete-suggestion.highlighted {
+            background-color: #667eea;
+            color: white;
+        }
+
+        .autocomplete-suggestion.highlighted .station-code {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .btn-search {
+            width: 100%;
+            padding: 18px;
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-search:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-search:active {
+            transform: translateY(-1px);
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .info-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-top: 30px;
+        }
+
+        .info-section h3 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .info-section p {
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 12px;
+            font-size: 0.95em;
+        }
+
+        .info-section .contact-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-section .contact-info strong {
+            color: #333;
+        }
+
+        .info-section .contact-info a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .info-section .contact-info a:hover {
+            text-decoration: underline;
+        }
+
+        .icon {
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .booking-card {
+                padding: 25px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .form-title {
+                font-size: 1.5em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .header p {
+                font-size: 1em;
+            }
+
+            .booking-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎫 RailConnect</h1>
+            <p>Book Your Journey with Ease</p>
+        </div>
+
+        <div class="booking-card">
+            <h2 class="form-title">Search & Book Train Tickets</h2>
+            
+            <form id="bookingForm" onsubmit="handleBooking(event)">
+                <div class="form-group">
+                    <label class="form-label" for="fromStation">
+                        <span class="icon">🚉</span>From Station <span class="required">*</span>
+                    </label>
+                    <div class="autocomplete-container">
+                    <input 
+                        type="text" 
+                        id="fromStation" 
+                        class="form-input" 
+                            placeholder="Type station name or code (e.g., New Delhi or NDLS)"
+                        required
+                            autocomplete="off"
+                    >
+                        <div class="autocomplete-suggestions" id="fromSuggestions"></div>
+                    </div>
+                    <div class="error-message" id="fromError">Please enter departure station</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="toStation">
+                        <span class="icon">🏁</span>To Station <span class="required">*</span>
+                    </label>
+                    <div class="autocomplete-container">
+                    <input 
+                        type="text" 
+                        id="toStation" 
+                        class="form-input" 
+                            placeholder="Type station name or code (e.g., Mumbai Central or BCT)"
+                        required
+                            autocomplete="off"
+                    >
+                        <div class="autocomplete-suggestions" id="toSuggestions"></div>
+                    </div>
+                    <div class="error-message" id="toError">Please enter arrival station</div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="travelDate">
+                            <span class="icon">📅</span>Travel Date <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="date" 
+                            id="travelDate" 
+                            class="form-input"
+                            required
+                        >
+                        <div class="error-message" id="dateError">Please select travel date</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="travelClass">
+                            <span class="icon">💺</span>Class
+                        </label>
+                        <select id="travelClass" class="form-select">
+                            <option value="All">All Classes</option>
+                            <option value="SL">Sleeper (SL)</option>
+                            <option value="3A">Third AC (3AC)</option>
+                            <option value="2A">Second AC (2AC)</option>
+                            <option value="1A">First AC (1AC)</option>
+                            <option value="CC">Chair Car (CC)</option>
+                            <option value="EC">Executive Chair Car (EC)</option>
+                            <option value="2S">Second Sitting (2S)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-search">
+                    🔍 Search Trains on IRCTC
+                </button>
+            </form>
+        </div>
+
+        <div class="info-section">
+            <h3>📋 Important Information</h3>
+            <p><strong>Festival Round Trip Scheme:</strong> User Guide and Terms & Conditions</p>
+            <p>Customers can use enhanced interface for their RailConnect related queries!!</p>
+            
+            <div class="contact-info">
+                <p><strong>📞 Customer Care:</strong> <a href="tel:+91-8044647999">+91-8044647999</a></p>
+                <p><strong>📧 Email Support:</strong> <a href="mailto:railconnect.query@gmail.com">railconnect.query@gmail.com</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let stationsData = [];
+        let currentHighlightedIndex = -1;
+
+        // Set minimum date to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('travelDate').setAttribute('min', today);
+
+        // Load stations data from JSON file
+        async function loadStationsData() {
+            try {
+                const response = await fetch('stations.json');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                stationsData = await response.json();
+                console.log('Stations data loaded successfully:', stationsData.length, 'stations');
+            } catch (error) {
+                console.error('Error loading stations data:', error);
+                console.error('Make sure stations.json is in the same directory as index.html');
+                console.error('If opening file directly, try using a local server instead');
+            }
+        }
+
+        // Initialize autocomplete functionality
+        function initializeAutocomplete() {
+            const fromInput = document.getElementById('fromStation');
+            const toInput = document.getElementById('toStation');
+            const fromSuggestions = document.getElementById('fromSuggestions');
+            const toSuggestions = document.getElementById('toSuggestions');
+
+            // From station autocomplete
+            fromInput.addEventListener('input', function() {
+                hideError('fromError');
+                showSuggestions(this.value, fromSuggestions, fromInput);
+            });
+
+            fromInput.addEventListener('keydown', function(e) {
+                handleKeyNavigation(e, fromSuggestions, fromInput);
+            });
+
+            fromInput.addEventListener('blur', function() {
+                setTimeout(() => hideSuggestions(fromSuggestions), 200);
+            });
+
+            // To station autocomplete
+            toInput.addEventListener('input', function() {
+                hideError('toError');
+                showSuggestions(this.value, toSuggestions, toInput);
+            });
+
+            toInput.addEventListener('keydown', function(e) {
+                handleKeyNavigation(e, toSuggestions, toInput);
+            });
+
+            toInput.addEventListener('blur', function() {
+                setTimeout(() => hideSuggestions(toSuggestions), 200);
+            });
+        }
+
+        // Show suggestions based on input
+        function showSuggestions(query, suggestionsContainer, inputElement) {
+            // Show suggestions even for single character input
+            if (!query || query.length < 1) {
+                hideSuggestions(suggestionsContainer);
+                return;
+            }
+
+            // Filter stations by name or code, prioritizing exact matches and starts-with matches
+            const filteredStations = stationsData.filter(station => 
+                station.name.toLowerCase().includes(query.toLowerCase()) ||
+                station.code.toLowerCase().includes(query.toLowerCase())
+            ).sort((a, b) => {
+                // Prioritize stations that start with the query
+                const aNameStarts = a.name.toLowerCase().startsWith(query.toLowerCase());
+                const bNameStarts = b.name.toLowerCase().startsWith(query.toLowerCase());
+                const aCodeStarts = a.code.toLowerCase().startsWith(query.toLowerCase());
+                const bCodeStarts = b.code.toLowerCase().startsWith(query.toLowerCase());
+                
+                if (aNameStarts && !bNameStarts) return -1;
+                if (!aNameStarts && bNameStarts) return 1;
+                if (aCodeStarts && !bCodeStarts) return -1;
+                if (!aCodeStarts && bCodeStarts) return 1;
+                
+                return a.name.localeCompare(b.name);
+            }).slice(0, 10); // Show up to 10 suggestions
+
+            if (filteredStations.length === 0) {
+                hideSuggestions(suggestionsContainer);
+                return;
+            }
+
+            suggestionsContainer.innerHTML = '';
+            currentHighlightedIndex = -1;
+
+            filteredStations.forEach((station, index) => {
+                const suggestion = document.createElement('div');
+                suggestion.className = 'autocomplete-suggestion';
+                suggestion.innerHTML = `
+                    <div class="station-name">${station.name}</div>
+                    <div class="station-code">${station.code}</div>
+                `;
+
+                suggestion.addEventListener('click', function() {
+                    inputElement.value = station.name;
+                    hideSuggestions(suggestionsContainer);
+                });
+
+                suggestionsContainer.appendChild(suggestion);
+            });
+
+            suggestionsContainer.style.display = 'block';
+        }
+
+        // Hide suggestions
+        function hideSuggestions(suggestionsContainer) {
+            suggestionsContainer.style.display = 'none';
+            currentHighlightedIndex = -1;
+        }
+
+        // Handle keyboard navigation
+        function handleKeyNavigation(e, suggestionsContainer, inputElement) {
+            const suggestions = suggestionsContainer.querySelectorAll('.autocomplete-suggestion');
+            
+            if (suggestions.length === 0) return;
+
+            switch(e.key) {
+                case 'ArrowDown':
+                    e.preventDefault();
+                    currentHighlightedIndex = Math.min(currentHighlightedIndex + 1, suggestions.length - 1);
+                    updateHighlight(suggestions);
+                    break;
+                case 'ArrowUp':
+                    e.preventDefault();
+                    currentHighlightedIndex = Math.max(currentHighlightedIndex - 1, -1);
+                    updateHighlight(suggestions);
+                    break;
+                case 'Enter':
+                    e.preventDefault();
+                    if (currentHighlightedIndex >= 0) {
+                        suggestions[currentHighlightedIndex].click();
+                    }
+                    break;
+                case 'Escape':
+                    hideSuggestions(suggestionsContainer);
+                    break;
+            }
+        }
+
+        // Update highlighted suggestion
+        function updateHighlight(suggestions) {
+            suggestions.forEach((suggestion, index) => {
+                suggestion.classList.toggle('highlighted', index === currentHighlightedIndex);
+            });
+        }
+
+        // Handle form submission and redirect to IRCTC
+        function handleBooking(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Get form values
+            const fromStation = document.getElementById('fromStation').value.trim();
+            const toStation = document.getElementById('toStation').value.trim();
+            const travelDate = document.getElementById('travelDate').value;
+            const travelClass = document.getElementById('travelClass').value;
+
+            // Validate all fields are filled
+            let isValid = true;
+
+            if (!fromStation) {
+                showError('fromError');
+                isValid = false;
+            } else {
+                hideError('fromError');
+            }
+
+            if (!toStation) {
+                showError('toError');
+                isValid = false;
+            } else {
+                hideError('toError');
+            }
+
+            if (!travelDate) {
+                showError('dateError');
+                isValid = false;
+            } else {
+                hideError('dateError');
+            }
+
+            // If validation fails, stop here
+            if (!isValid) {
+                return;
+            }
+
+            // Format date for IRCTC (DD-MM-YYYY)
+            const dateObj = new Date(travelDate);
+            const day = String(dateObj.getDate()).padStart(2, '0');
+            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const year = dateObj.getFullYear();
+            const formattedDate = `${day}-${month}-${year}`;
+
+            // Construct IRCTC URL with search parameters
+            const irctcBaseURL = 'https://www.irctc.co.in/nget/train-search';
+            
+            // Build query string
+            const params = new URLSearchParams({
+                'fromStation': fromStation,
+                'toStation': toStation,
+                'journeyDate': formattedDate,
+                'journeyClass': travelClass
+            });
+
+            // Create full URL
+            const fullURL = `${irctcBaseURL}?${params.toString()}`;
+
+            // Redirect directly to IRCTC train results page
+                window.open(fullURL, '_blank'); // Open in new tab
+        }
+
+        // Show error message
+        function showError(errorId) {
+            document.getElementById(errorId).style.display = 'block';
+        }
+
+        // Hide error message
+        function hideError(errorId) {
+            document.getElementById(errorId).style.display = 'none';
+        }
+
+        // Clear errors when user starts typing
+        document.getElementById('fromStation').addEventListener('input', function() {
+            hideError('fromError');
+        });
+
+        document.getElementById('toStation').addEventListener('input', function() {
+            hideError('toError');
+        });
+
+        document.getElementById('travelDate').addEventListener('change', function() {
+            hideError('dateError');
+        });
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', async function() {
+            await loadStationsData();
+            initializeAutocomplete();
+        });
+    </script>
+</body>
+</html>
